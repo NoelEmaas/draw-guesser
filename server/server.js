@@ -16,7 +16,7 @@ const server = net.createServer(socket => {
     });
 
     socket.on('close', () => {
-        console.log("A client has left the chat.");
+        console.log("A client has left.");
     });
 
     console.log(sockets);
