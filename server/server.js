@@ -31,6 +31,7 @@ const server = net.createServer(socket => {
 
             if (allPlayersReady()) {
                 broadcast(socket, JSON.stringify({ action: 'start', payload: { players: players }}));
+                status = 'playing';
             }
 
             return;
@@ -41,26 +42,12 @@ const server = net.createServer(socket => {
 
     socket.on('error', err => {
         console.log('A client has disconnected.');
-        const player_left = players[id];
-        delete sockets[id];
-        delete players[id];
-        broadcast(socket, JSON.stringify({ action: 'leave', payload: { players: players, player_left: player_left}}));
-
-        if (allPlayersReady()) {
-            broadcast(socket, JSON.stringify({ action: 'start', payload: { players: players }}));
-        }
+        removePlayer(socket, id);
     });
 
     socket.on('close', () => {
         console.log("A client has left.");
-        const player_left = players[id];
-        delete sockets[id];
-        delete players[id];
-        broadcast(socket, JSON.stringify({ action: 'leave', payload: { players: players, player_left: player_left}}));
-
-        if (allPlayersReady()) {
-            broadcast(socket, JSON.stringify({ action: 'start', payload: { players: players }}));
-        }
+        removePlayer(socket, id);
     });
 });
 
@@ -82,4 +69,15 @@ function allPlayersReady() {
     }
 
     return true;
+}
+
+function removePlayer(socket, id) {
+    const player_left = players[id];
+    delete sockets[id];
+    delete players[id];
+    broadcast(socket, JSON.stringify({ action: 'leave', payload: { players: players, player_left: player_left}}));
+
+    if (allPlayersReady()) {
+        broadcast(socket, JSON.stringify({ action: 'start', payload: { players: players }}));
+    }
 }
