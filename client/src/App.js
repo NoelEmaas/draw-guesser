@@ -1,27 +1,33 @@
 import './App.css';
 import { SocketProvider } from './providers/SocketProvider';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import StartPage from './pages/Start';
 import GamePage from './pages/Game';
+import Lobby from './pages/Lobby';
 
 const App = () => {
   const [username, setUsername] = useState('');
+  const [join, setJoin] = useState(false);
   const [startGame, setStartGame] = useState(false);
+
+  useEffect(() => {
+    console.log(startGame);
+  }, [startGame])
 
   return (
     <SocketProvider>
-      {
-        startGame ? (
-          <GamePage />
-        ) : (
-          <StartPage 
-            username={username} 
-            setUsername={setUsername}
-            setStartGame={setStartGame}
-          />
-        )
-      }
+      {join ? (
+        <Lobby setStartGame={setStartGame} setJoin={setJoin}/>
+      ) : startGame ? (
+        <GamePage />
+      ) : (
+        <StartPage 
+          username={username} 
+          setUsername={setUsername}
+          setJoin={setJoin}
+        />
+      )}
     </SocketProvider>
   );
 }

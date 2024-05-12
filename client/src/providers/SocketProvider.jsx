@@ -19,8 +19,27 @@ export const SocketProvider = ({ children }) => {
 
     newSocket.on('data', (data) => {
       const jsonString = data.toString('utf8');
-      const socketData = JSON.parse(jsonString);
-      setSocketData(socketData);
+      const indexToCut = jsonString.indexOf('}{');
+
+      if (indexToCut !== -1) {
+        const potentialJsonSegments = jsonString.split('}{');
+      
+        for (let i = 0; i < potentialJsonSegments.length; i++) {
+          let segment = potentialJsonSegments[i];
+
+          if (i < potentialJsonSegments.length - 1) {
+            segment += '}';
+          }
+
+          if (i > 0) {
+            segment = '{' + segment;
+          }
+          
+          setSocketData(JSON.parse(segment));
+        }
+      } else {
+        setSocketData(JSON.parse(jsonString));
+      }
     });
 
     newSocket.on('timeout', () => {

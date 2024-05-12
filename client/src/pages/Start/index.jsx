@@ -1,8 +1,12 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { SocketContext } from "../../providers/SocketProvider"
 
-const StartPage = ({ username, setUsername, setStartGame }) => {
-    const { connectToServer } = useContext(SocketContext);
+const StartPage = ({ username, setUsername, setJoin }) => {
+    const { connectToServer, sendData } = useContext(SocketContext);
+
+    useEffect(() => {
+        connectToServer();
+    }, [])
 
     return (
         <div>
@@ -13,10 +17,15 @@ const StartPage = ({ username, setUsername, setStartGame }) => {
                 onChange={(e) => setUsername(e.target.value)}
             />
             <button onClick={() =>  {
-                connectToServer()
-                setStartGame(true)
+                const data = {
+                    action: 'join',
+                    payload: { name: username }
+                }
+
+                sendData(JSON.stringify(data));
+                setJoin(true);
             }}>
-                Start Game
+                Join Room
             </button>
         </div>
     )
