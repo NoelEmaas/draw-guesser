@@ -1,6 +1,8 @@
 import React, { useContext, useRef, useEffect, useState } from 'react';
 import { SocketContext } from "../../providers/SocketProvider"
 
+import Chat from './components/Chat';
+
 const GamePage = () => {
     const { socketData, sendData } = useContext(SocketContext);
     const canvasRef = useRef(null);
@@ -16,28 +18,28 @@ const GamePage = () => {
     }, []);
 
     useEffect(() => {
-        if (socketData) {
-            const { action } = socketData;
-            const context = contextRef.current;
+        if (!socketData) return;
 
-            switch (action) {
-                case 'start':
-                    context.beginPath();
-                    context.moveTo(socketData.currentX, socketData.currentY);
-                    break;
-                case 'draw':
-                    context.lineTo(socketData.currentX, socketData.currentY);
-                    context.stroke();
-                    break;
-                case 'stop':
-                    context.closePath();
-                    break;
-                case 'print':
-                    console.log('Received print action');
-                    break;
-                default:
-                    break;
-            }
+        const { action } = socketData;
+        const context = contextRef.current;
+
+        switch (action) {
+            case 'start':
+                context.beginPath();
+                context.moveTo(socketData.currentX, socketData.currentY);
+                break;
+            case 'draw':
+                context.lineTo(socketData.currentX, socketData.currentY);
+                context.stroke();
+                break;
+            case 'stop':
+                context.closePath();
+                break;
+            case 'print':
+                console.log('Received print action');
+                break;
+            default:
+                break;
         }
     }, [socketData]);
 
@@ -107,8 +109,9 @@ const GamePage = () => {
     }, []);
 
     return (
-        <div>
-            <canvas id="gameCanvas" width="800" height="600" ref={canvasRef}></canvas>
+        <div className='flex items-center'>
+            <canvas id="gameCanvas" width="600" height="600" ref={canvasRef} className='border'></canvas>
+            <Chat socketData={socketData} sendData={sendData} />
         </div>
     )
 }
