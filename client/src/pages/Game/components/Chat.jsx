@@ -21,11 +21,6 @@ const Chat = ({ socketData, sendData }) => {
         if (message.trim() === "") return;
         
         const sender = "You";
-        setMessages((prevMessages) => [
-            ...prevMessages,
-            { message, sender },
-        ]);
-
         const data = {
             action: "message",
             message: message,
