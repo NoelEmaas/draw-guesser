@@ -3,48 +3,53 @@ import { SocketContext } from "../../providers/SocketProvider"
 
 import Chat from './components/Chat';
 import DrawingBoard from './components/DrawingBoard';
+import StaticBoard from './components/StaticBoard';
 import Timer from './components/Timer';
+import Players from './components/Players';
 
 const GamePage = () => {
-    const { socketData, sendData, userId } = useContext(SocketContext);
-    const [timerIsActive, setTimerIsActive] = useState(false);
+    const { socketData, sendData, userId, players, drawer, word } = useContext(SocketContext);
+    const [timerIsActive, setTimerIsActive] = useState(true);
     const [seconds, setSeconds] = useState(30);
-    const [drawer, setDrawer] = useState({});
-    const [word, setWord] = useState('');
+    const [isDrawer, setIsDrawer] = useState(true);
 
     useEffect(() => {
         if (seconds === 0) {
-            const data = {
-                action: 'next',
-                payload: null,
+            if (drawer.id === userId) {
+                const data = {
+                    action: 'next',
+                    payload: null,
+                }
+
+                sendData(JSON.stringify(data));
             }
 
-            sendData(JSON.stringify(data));
-            setTimerIsActive(false);
             setSeconds(30);
         }
     }, [seconds]);
 
     useEffect(() => {
-        if (!socketData) return;
-        const { action, payload } = socketData;
-
-        if (action === 'next') {
-            const { drawer, word } = payload;
-            setDrawer(drawer);
-            setWord(word);
-
-            console.log('drawer', drawer);
-            setTimerIsActive(true);
+        if (drawer.id === userId) {
+            setIsDrawer(true);
+        } else {
+            setIsDrawer(false);
         }
-    }, [socketData]);
+    }, [drawer])
 
     return (
-        <div className='flex items-center'>
-            <p>{userId}</p>
-            <DrawingBoard socketData={socketData} sendData={sendData} />
+        <div className='flex items-center bg-blue-600'>
+            <p>User id: {userId}</p>
+            <Players players={players} drawer={drawer}/>
+            {
+                isDrawer ? (
+                    <DrawingBoard sendData={sendData} />
+                ) : (
+                    <StaticBoard socketData={socketData} />
+
+                )
+            }
             <Timer isActive={timerIsActive} setIsActive={setTimerIsActive} seconds={seconds} setSeconds={setSeconds} />
-            <Chat socketData={socketData} sendData={sendData} />
+            <Chat socketData={socketData} sendData={sendData} word={word} canChat={!isDrawer}/>
         </div>
     )
 }

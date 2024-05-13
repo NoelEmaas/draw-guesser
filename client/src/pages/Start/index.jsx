@@ -3,11 +3,11 @@ import { SocketContext } from "../../providers/SocketProvider"
 import Banner from '../../assets/banner.png';
 
 const StartPage = ({ username, setUsername, setJoin }) => {
-    const { connectToServer, sendData, userId } = useContext(SocketContext);
+    const { connectToServer, sendData } = useContext(SocketContext);
 
     useEffect(() => {
         connectToServer();
-    }, [])
+    }, []);
 
     const handleJoin = () => {
         const data = {

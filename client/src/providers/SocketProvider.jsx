@@ -7,6 +7,9 @@ export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
   const [socketData, setSocketData] = useState(null);
   const [userId, setUserId] = useState(null);
+  const [players, setPlayers] = useState({});
+  const [drawer, setDrawer] = useState(null);
+  const [word, setWord] = useState(null);
 
   const connectToServer = () => {
     const newSocket = net.connect({
@@ -36,9 +39,35 @@ export const SocketProvider = ({ children }) => {
             segment = '{' + segment;
           }
           
+          const parsedData = JSON.parse(segment);
+          if (parsedData.action === 'get_id') {
+            setUserId(parsedData.payload.id);
+            continue;
+          }
+
+          if (parsedData.action === 'next') {
+            console.log(parsedData.payload);
+            setDrawer(parsedData.payload.drawer);
+            setWord(parsedData.payload.word);
+            continue;
+          }
+          
           setSocketData(JSON.parse(segment));
         }
       } else {
+        const parsedData = JSON.parse(jsonString);
+        if (parsedData.action === 'get_id') {
+          setUserId(parsedData.payload.id);
+          return;
+        }
+
+        if (parsedData.action === 'next') {
+          console.log(parsedData.payload);
+          setDrawer(parsedData.payload.drawer);
+          setWord(parsedData.payload.word);
+          return;
+        }
+
         setSocketData(JSON.parse(jsonString));
       }
     });
@@ -67,7 +96,7 @@ export const SocketProvider = ({ children }) => {
   };    
 
   return (
-    <SocketContext.Provider value={{ socket, socketData, userId, setUserId, connectToServer, sendData }}>
+    <SocketContext.Provider value={{ socket, socketData, userId, players, drawer, word, setPlayers, connectToServer, sendData }}>
       {children}
     </SocketContext.Provider>
   );

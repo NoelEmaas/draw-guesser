@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const Chat = ({ socketData, sendData }) => {
+const Chat = ({ socketData, sendData, word, canChat }) => {
     const [messages, setMessages] = useState([]);
     const [message, setMessage] = useState("");
 

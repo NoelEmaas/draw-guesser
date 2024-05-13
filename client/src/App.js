@@ -11,10 +11,6 @@ const App = () => {
   const [join, setJoin] = useState(false);
   const [startGame, setStartGame] = useState(false);
 
-  useEffect(() => {
-    console.log(startGame);
-  }, [startGame])
-
   return (
     <SocketProvider>
       {join ? (
