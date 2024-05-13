@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { SocketContext } from "../../providers/SocketProvider"
+import Banner from '../../assets/banner.png';
 
 const Lobby = ({ setStartGame, setJoin }) => {
     const { socketData, sendData, setUserId, userId } = useContext(SocketContext);
@@ -34,6 +35,7 @@ const Lobby = ({ setStartGame, setJoin }) => {
     }, [socketData])
 
     const handleReady = () => {
+        console.log('read');
         const data = {
             action: 'ready',
             payload: null,
@@ -43,8 +45,12 @@ const Lobby = ({ setStartGame, setJoin }) => {
     }
 
     return (
-        <div className="flex flex-col">
-            <h1>Lobby</h1>
+        <div className='w-screen h-screen bg-blue-600 p-10 flex flex-col items-center justify-center gap-y-5'>
+            <img src={Banner} alt="" width={600}/>
+            <div className='w-full flex flex-col items-center'>
+                <h1>Lobby</h1>
+                
+            </div>
             <h4>Players:</h4>
             <ul>
                 {Object.keys(players).map(player => (
