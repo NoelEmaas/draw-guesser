@@ -6,6 +6,7 @@ export const SocketContext = createContext();
 export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
   const [socketData, setSocketData] = useState(null);
+  const [userId, setUserId] = useState(null);
 
   const connectToServer = () => {
     const newSocket = net.connect({
@@ -66,7 +67,7 @@ export const SocketProvider = ({ children }) => {
   };    
 
   return (
-    <SocketContext.Provider value={{ socket, socketData, connectToServer, sendData }}>
+    <SocketContext.Provider value={{ socket, socketData, userId, setUserId, connectToServer, sendData }}>
       {children}
     </SocketContext.Provider>
   );

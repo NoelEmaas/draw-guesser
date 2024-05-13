@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { SocketContext } from "../../providers/SocketProvider"
 
 const Lobby = ({ setStartGame, setJoin }) => {
-    const { socketData, sendData } = useContext(SocketContext);
+    const { socketData, sendData, setUserId, userId } = useContext(SocketContext);
     const [players, setPlayers] = useState({});
 
     useEffect(() => {
@@ -10,21 +10,37 @@ const Lobby = ({ setStartGame, setJoin }) => {
         const { action, payload } = socketData;
         console.log(action);
 
-        if (action === 'join')
+        if (action === 'join') {
             setPlayers(payload.players);
+            setUserId(payload.id);
+        }
 
-        if (action === 'ready')
+        if (action === 'ready') {
             setPlayers(payload.players);
+        }
 
-        if (action === 'start') {
+        if (action === 'play') {
             setJoin(false);
             setStartGame(true);
         }
 
-        if (action === 'leave')
+        if (action === 'leave') {
             setPlayers(payload.players);
-        
+        }
+
+        if (action === 'get_id') {
+            setUserId(payload.id);
+        }
     }, [socketData])
+
+    const handleReady = () => {
+        const data = {
+            action: 'ready',
+            payload: null,
+        }
+
+        sendData(JSON.stringify(data));
+    }
 
     return (
         <div className="flex flex-col">
@@ -36,14 +52,7 @@ const Lobby = ({ setStartGame, setJoin }) => {
                 ))}
             </ul>
             <button
-            onClick={() => {
-                const data = {
-                    action: 'ready',
-                    payload: null,
-                }
-
-                sendData(JSON.stringify(data));
-            }}
+            onClick={handleReady}
             >
                 Ready
             </button>
