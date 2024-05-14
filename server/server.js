@@ -3,11 +3,17 @@ const crypto = require('crypto');
 
 let sockets = {};
 let players = {};
+let drawerIndex = 0;
+let gotCorrect = 0;
+let rounds = 0;
+let words = ['apple', 'banana', 'cherry', 'date', 'elderberry', 'fig', 'grape', 'honeydew', 'kiwi', 'lemon', 'mango', 'nectarine', 'orange', 'papaya', 'quince', 'raspberry', 'strawberry', 'tangerine', 'ugli', 'vanilla', 'watermelon', 'ximenia', 'yuzu', 'zucchini'];
 let status = 'waiting';
 
 const server = net.createServer(socket => {
     const id = crypto.randomBytes(8).toString('hex');
     sockets[id] = socket;
+
+    console.log('A client has connected.');
 
     socket.on('data', data => {
         const { action, payload } = JSON.parse(data.toString());
@@ -19,9 +25,11 @@ const server = net.createServer(socket => {
                 id: id,
                 score: 0,
                 ready: false,
+                correct: false,
             };
 
             broadcast(socket, JSON.stringify({ action: 'join', payload: { players: players }}));
+            socket.write(JSON.stringify({ action: 'get_id', payload: { id: id } }));
             return;
         }
 
@@ -30,10 +38,51 @@ const server = net.createServer(socket => {
             broadcast(socket, JSON.stringify({ action: 'ready', payload: { players: players }}));
 
             if (allPlayersReady()) {
-                broadcast(socket, JSON.stringify({ action: 'start', payload: { players: players }}));
+                broadcast(socket, JSON.stringify({ action: 'play', payload: { players: players }}));
+                broadcast(socket, JSON.stringify({ action: 'next', payload: { players: players, drawer: players[Object.keys(players)[drawerIndex]] }}));
                 status = 'playing';
             }
 
+            return;
+        }
+
+        if (action == 'next') {
+            gotCorrect = 0;
+            rounds += 1;
+
+            if (rounds == Object.keys(players).length) {
+                players = Object.fromEntries(Object.entries(players).sort((a, b) => b[1].score - a[1].score));
+                broadcast(socket, JSON.stringify({ action: 'end', payload: { players: players }}));
+                status = 'waiting';
+                rounds = 0;
+                return;
+            }
+
+            for (const [id, player] of Object.entries(players)) {
+                player.correct = false;
+            }
+
+            drawerIndex = (drawerIndex + 1) % Object.keys(players).length;
+            broadcast(socket, JSON.stringify({ action: 'next', payload: { players: players, drawer: players[Object.keys(players)[drawerIndex]] }}));
+            return;
+        }
+
+        if (action == 'set_word') {
+            broadcast(socket, JSON.stringify({ action: 'set_word', payload: { word: payload.word }}));
+            return;
+        }
+
+        if (action == 'message') {
+            const { correct, drawerId } = payload;
+            if (correct) {
+                players[id].correct = true;
+                players[id].score += (Object.keys(players).length - gotCorrect - 1) * 10;
+                players[drawerId].score += 10;
+                gotCorrect += 1;
+                broadcast(socket, JSON.stringify({ action: 'score', payload: { players: players }}));
+            } 
+
+            broadcast(socket, data);
             return;
         }
 
@@ -51,7 +100,7 @@ const server = net.createServer(socket => {
     });
 });
 
-server.listen(1235, '127.0.0.1');
+server.listen(1235, '192.168.1.91');
 
 function broadcast(sender, data) {
     for (const [id, socket] of Object.entries(sockets)) {
