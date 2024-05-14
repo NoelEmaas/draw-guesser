@@ -14,8 +14,8 @@ export const SocketProvider = ({ children }) => {
 
   const connectToServer = () => {
     const newSocket = net.connect({
-      port: 1235,
-      host: '127.0.0.1',
+      port: 8000,
+      host: '192.168.1.91',
     });
 
     newSocket.on('connect', () => {
@@ -28,6 +28,7 @@ export const SocketProvider = ({ children }) => {
 
       if (indexToCut !== -1) {
         const potentialJsonSegments = jsonString.split('}{');
+        let dataSegments = new Set();
       
         for (let i = 0; i < potentialJsonSegments.length; i++) {
           let segment = potentialJsonSegments[i];
@@ -41,6 +42,10 @@ export const SocketProvider = ({ children }) => {
           }
           
           const parsedData = JSON.parse(segment);
+          dataSegments.add(parsedData);
+        }
+
+        for (const parsedData of dataSegments) {
           if (parsedData.action === 'get_id') {
             setUserId(parsedData.payload.id);
             continue;
@@ -71,7 +76,7 @@ export const SocketProvider = ({ children }) => {
             continue;
           }
           
-          setSocketData(JSON.parse(segment));
+          setSocketData(parsedData);
         }
       } else {
         const parsedData = JSON.parse(jsonString);
