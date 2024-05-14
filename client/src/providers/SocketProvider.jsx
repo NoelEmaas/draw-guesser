@@ -7,6 +7,10 @@ export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
   const [socketData, setSocketData] = useState(null);
   const [userId, setUserId] = useState(null);
+  const [players, setPlayers] = useState({});
+  const [drawer, setDrawer] = useState(null);
+  const [word, setWord] = useState(null);
+  const [end, setEnd] = useState(false);
 
   const connectToServer = () => {
     const newSocket = net.connect({
@@ -36,9 +40,70 @@ export const SocketProvider = ({ children }) => {
             segment = '{' + segment;
           }
           
+          const parsedData = JSON.parse(segment);
+          if (parsedData.action === 'get_id') {
+            setUserId(parsedData.payload.id);
+            continue;
+          }
+
+          if (parsedData.action === 'next') {
+            setDrawer(parsedData.payload.drawer);
+            setPlayers(parsedData.payload.players);
+            continue;
+          }
+
+          if (parsedData.action === 'set_word') {
+            console.log('setting word', parsedData.payload.word);
+            setWord(parsedData.payload.word);
+            continue;
+          }
+
+          if (parsedData.action === 'score') {
+            setPlayers(parsedData.payload.players);
+            continue;
+          }
+
+          if (parsedData.action === 'end') {
+            setPlayers(parsedData.payload.players);
+            setEnd(true);
+            // setDrawer(null);
+            // setWord(null);
+            continue;
+          }
+          
           setSocketData(JSON.parse(segment));
         }
       } else {
+        const parsedData = JSON.parse(jsonString);
+        if (parsedData.action === 'get_id') {
+          setUserId(parsedData.payload.id);
+          return;
+        }
+
+        if (parsedData.action === 'next') {
+          setDrawer(parsedData.payload.drawer);
+          setPlayers(parsedData.payload.players);
+          return;
+        }
+
+        if (parsedData.action === 'set_word') {
+          setWord(parsedData.payload.word);
+          return;
+        }
+
+        if (parsedData.action === 'score') {
+          setPlayers(parsedData.payload.players);
+          return;
+        }
+
+        if (parsedData.action === 'end') {
+          setPlayers(parsedData.payload.players);
+          setEnd(true);
+          // setDrawer(null);
+          // setWord(null);
+          return;
+        }
+
         setSocketData(JSON.parse(jsonString));
       }
     });
@@ -67,7 +132,7 @@ export const SocketProvider = ({ children }) => {
   };    
 
   return (
-    <SocketContext.Provider value={{ socket, socketData, userId, setUserId, connectToServer, sendData }}>
+    <SocketContext.Provider value={{ socket, socketData,  userId, players, drawer, word, end, setWord, setPlayers, connectToServer, sendData }}>
       {children}
     </SocketContext.Provider>
   );

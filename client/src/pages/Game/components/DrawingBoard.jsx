@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 
-const DrawingBoard = ({ socketData, sendData }) => {
+const DrawingBoard = ({ sendData }) => {
     const canvasRef = useRef(null);
     const contextRef = useRef(null);
     const isDrawing = useRef(false);
@@ -12,32 +12,6 @@ const DrawingBoard = ({ socketData, sendData }) => {
         context.lineWidth = 2;
         contextRef.current = context;
     }, []);
-
-    useEffect(() => {
-        if (!socketData) return;
-
-        const { action } = socketData;
-        const context = contextRef.current;
-
-        switch (action) {
-            case 'start':
-                context.beginPath();
-                context.moveTo(socketData.currentX, socketData.currentY);
-                break;
-            case 'draw':
-                context.lineTo(socketData.currentX, socketData.currentY);
-                context.stroke();
-                break;
-            case 'stop':
-                context.closePath();
-                break;
-            case 'print':
-                console.log('Received print action');
-                break;
-            default:
-                break;
-        }
-    }, [socketData]);
 
     const handleMouseDown = (e) => {
         isDrawing.current = true;
@@ -86,8 +60,8 @@ const DrawingBoard = ({ socketData, sendData }) => {
     const getMouseCoords = (canvas, e) => {
         const rect = canvas.getBoundingClientRect();
         return {
-            x: e.clientX,
-            y: e.clientY,
+            x: e.clientX - rect.left,
+            y: e.clientY - rect.top,
         };
     };
 
@@ -105,7 +79,7 @@ const DrawingBoard = ({ socketData, sendData }) => {
     }, []);
 
     return (
-        <canvas id="gameCanvas" width="600" height="600" ref={canvasRef} className='border'></canvas>
+        <canvas id="gameCanvas" width="500" height="500" ref={canvasRef} className='border bg-white rounded-lg'></canvas>
     );
 }
 
