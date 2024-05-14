@@ -8,10 +8,15 @@ import Timer from './components/Timer';
 import Players from './components/Players';
 
 const GamePage = () => {
-    const { socketData, sendData, userId, players, drawer, word } = useContext(SocketContext);
-    const [timerIsActive, setTimerIsActive] = useState(true);
+    const { socketData, sendData, userId, players, drawer, word, setWord } = useContext(SocketContext);
+    const [timerIsActive, setTimerIsActive] = useState(false);
     const [seconds, setSeconds] = useState(30);
     const [isDrawer, setIsDrawer] = useState(true);
+
+    useEffect(() => {
+        if (!word) return;
+        setTimerIsActive(true);
+    }, [word]);
 
     useEffect(() => {
         if (seconds === 0) {
@@ -23,14 +28,24 @@ const GamePage = () => {
 
                 sendData(JSON.stringify(data));
             }
-
+            setTimerIsActive(false);
             setSeconds(30);
+            setWord(null);
         }
     }, [seconds]);
 
     useEffect(() => {
         if (drawer.id === userId) {
             setIsDrawer(true);
+            if (word) return;
+            const data = {
+                action: 'set_word',
+                payload: {
+                    word: drawer.name,
+                },
+            }
+    
+            sendData(JSON.stringify(data));
         } else {
             setIsDrawer(false);
         }
@@ -49,7 +64,7 @@ const GamePage = () => {
                 )
             }
             <Timer isActive={timerIsActive} setIsActive={setTimerIsActive} seconds={seconds} setSeconds={setSeconds} />
-            <Chat socketData={socketData} sendData={sendData} word={word} canChat={!isDrawer}/>
+            <Chat socketData={socketData} player={players[userId]} drawer={drawer} sendData={sendData} word={word} canChat={!isDrawer}/>
         </div>
     )
 }

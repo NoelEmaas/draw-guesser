@@ -46,9 +46,17 @@ export const SocketProvider = ({ children }) => {
           }
 
           if (parsedData.action === 'next') {
-            console.log(parsedData.payload);
             setDrawer(parsedData.payload.drawer);
+            continue;
+          }
+
+          if (parsedData.action === 'set_word') {
             setWord(parsedData.payload.word);
+            continue;
+          }
+
+          if (parsedData.action === 'score') {
+            setPlayers(parsedData.payload.players);
             continue;
           }
           
@@ -64,7 +72,16 @@ export const SocketProvider = ({ children }) => {
         if (parsedData.action === 'next') {
           console.log(parsedData.payload);
           setDrawer(parsedData.payload.drawer);
+          return;
+        }
+
+        if (parsedData.action === 'set_word') {
           setWord(parsedData.payload.word);
+          return;
+        }
+
+        if (parsedData.action === 'score') {
+          setPlayers(parsedData.payload.players);
           return;
         }
 
@@ -96,7 +113,7 @@ export const SocketProvider = ({ children }) => {
   };    
 
   return (
-    <SocketContext.Provider value={{ socket, socketData, userId, players, drawer, word, setPlayers, connectToServer, sendData }}>
+    <SocketContext.Provider value={{ socket, socketData,  userId, players, drawer, word, setWord, setPlayers, connectToServer, sendData }}>
       {children}
     </SocketContext.Provider>
   );
