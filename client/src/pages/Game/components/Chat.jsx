@@ -43,16 +43,14 @@ const Chat = ({ socketData, sendData, player, word, drawer, canChat }) => {
             <div className="bg-white border rounded-lg h-full w-full p-4 relative flex flex-col items-center">
                 <div className="chat-messages w-full">
                     {messages.map((msg, index) => (
-                        <div key={index} className={`flex items-center gap-x-2 ${msg.correct ? 'text-green-600' : 'text-black'}`}>
-                            <p>
-                                {
-                                    msg.correct ? (
-                                        <p className="font-bold">{msg.sender} guessed the word!</p>
-                                    ) : (
-                                        <p>{msg.sender}: {msg.message}</p>
-                                    )
-                                }
-                            </p>
+                        <div key={index} className={`flex items-center gap-x-2 ${msg.correct ? 'text-green-600' : 'text-black'}`}>                 
+                            {
+                                msg.correct ? (
+                                    <p className="font-bold">{msg.sender} guessed the word!</p>
+                                ) : (
+                                    <p><strong>{msg.sender}</strong>: {msg.message}</p>
+                                )
+                            }            
                         </div>
                     ))}
                 </div>

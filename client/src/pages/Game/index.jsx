@@ -7,13 +7,15 @@ import StaticBoard from './components/StaticBoard';
 import Timer from './components/Timer';
 import Players from './components/Players';
 import RevealWord from './components/RevealWord';
+import EndGame from './components/EndGame';
 
 const GamePage = () => {
-    const { socketData, sendData, userId, players, drawer, word, setWord } = useContext(SocketContext);
+    const { socketData, sendData, userId, players, drawer, word, setWord , end } = useContext(SocketContext);
+    const words = ['apple', 'banana', 'cherry', 'date', 'elderberry', 'fig', 'grape', 'honeydew', 'kiwi', 'lemon', 'mango', 'nectarine', 'orange', 'papaya', 'quince', 'raspberry', 'strawberry', 'tangerine', 'ugli', 'vanilla', 'watermelon', 'ximenia', 'yuzu', 'zucchini'];
     const [timerIsActive, setTimerIsActive] = useState(false);
+    
     const [seconds, setSeconds] = useState(30);
     const [isDrawer, setIsDrawer] = useState(true);
-
     const [revealWord, setRevealWord] = useState(false);
 
     useEffect(() => {
@@ -23,19 +25,25 @@ const GamePage = () => {
 
     useEffect(() => {
         if (seconds === 0) {
-            if (drawer.id === userId) {
-                const data = {
-                    action: 'next',
-                    payload: null,
-                }
-
-                sendData(JSON.stringify(data));
-            }
-
             setRevealWord(true);
             setTimerIsActive(false);
             setSeconds(30);
-            setWord(null);
+
+            setTimeout(() => {
+                setRevealWord(false);
+                setWord(null);
+
+                if (drawer.id === userId) {
+                    const data = {
+                        action: 'next',
+                        payload: null,
+                    }
+
+                    console.log('request next');
+
+                    sendData(JSON.stringify(data));
+                }
+            }, 5000);
         }
     }, [seconds]);
 
@@ -46,7 +54,7 @@ const GamePage = () => {
             const data = {
                 action: 'set_word',
                 payload: {
-                    word: drawer.name,
+                    word: words[Math.floor(Math.random() * words.length)],
                 },
             }
     
@@ -59,16 +67,31 @@ const GamePage = () => {
     return (
         <div className='flex items-center bg-blue-600'>
             <Players players={players} drawer={drawer}/>
-            <div className='flex flex-col gap-y-2 w-[500px] py-4'>
-                <div className='bg-white rounded-lg border w-full h-full p-4'>
+            <div className='flex flex-col gap-y-2 w-[500px] py-2'>
+                <div className='bg-white rounded-lg border w-full h-full p-4 flex items-center justify-between'>
                     <Timer isActive={timerIsActive} setIsActive={setTimerIsActive} seconds={seconds} setSeconds={setSeconds} />
+                    {
+                        isDrawer ? (
+                            <p>Word: {word}</p>
+                        ) : (
+                            <p>Hint: {word && word.length} letters</p>
+                        )
+                    }
+                    {/* Word: {word} */}
                 </div>
                 {
-                    isDrawer ? (
-                    <DrawingBoard sendData={sendData} />
-
+                    end ? (
+                        <EndGame players={players} />
                     ) : (
-                        <StaticBoard socketData={socketData} />
+                        revealWord ? (
+                            <RevealWord word={word} />
+                        ) : (
+                            isDrawer ? (
+                                <DrawingBoard sendData={sendData} />
+                            ) : (
+                                <StaticBoard socketData={socketData} />
+                            )
+                        )
                     )
                 }
             </div>
