@@ -21,7 +21,7 @@ const server = net.createServer(socket => {
 
         if (indexToCut !== -1) {
             const potentialJsonSegments = jsonString.split('}{');
-            let dataSegments = Set();
+            let dataSegments = new Set();
 
             for (let i = 0; i < potentialJsonSegments.length; i++) {
                 let segment = potentialJsonSegments[i];
@@ -42,10 +42,11 @@ const server = net.createServer(socket => {
                 const { action, payload } = dataToSend;
 
                 if (action === 'join') {
-                    const { name } = payload;
+                    const { name, avatar } = payload;
                     players[id] = { 
-                        name: name,
                         id: id,
+                        name: name,
+                        avatar: avatar,
                         score: 0,
                         ready: false,
                         correct: false,
@@ -118,10 +119,11 @@ const server = net.createServer(socket => {
         const { action, payload } = JSON.parse(jsonString);
 
         if (action === 'join') {
-            const { name } = payload;
+            const { name, avatar } = payload;
             players[id] = { 
-                name: name,
                 id: id,
+                name: name,
+                avatar: avatar,
                 score: 0,
                 ready: false,
                 correct: false,

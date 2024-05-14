@@ -68,8 +68,15 @@ const GamePage = () => {
         <div className='flex items-center bg-blue-600'>
             <Players players={players} drawer={drawer}/>
             <div className='flex flex-col gap-y-2 w-[500px] py-2'>
-                <div className='bg-white rounded-lg border w-full h-full p-4 flex items-center justify-between'>
+                <div className='flex items-center justify-between w-full h-full p-4 bg-white border rounded-lg'>
                     <Timer isActive={timerIsActive} setIsActive={setTimerIsActive} seconds={seconds} setSeconds={setSeconds} />
+                    {
+                        isDrawer ? (
+                            <p className='font-bold text-blue-500'>YOU ARE THE DRAWER</p>
+                        ) : (
+                            <p className='font-bold text-blue-500'>YOUR ARE A GUESSER</p>
+                        )
+                    }
                     {
                         isDrawer ? (
                             <p>Word: {word}</p>
