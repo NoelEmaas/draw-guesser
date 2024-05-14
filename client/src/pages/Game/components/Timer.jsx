@@ -17,8 +17,8 @@ function Timer({ isActive, setIsActive, seconds, setSeconds }) {
 
   return (
     <div>
-      <h1>Countdown Timer</h1>
-      <p>{seconds} seconds</p>
+      <h1 className='font-bold text-blue-500'>Time:</h1>
+      <p>{seconds} seconds left</p>
     </div>
   );
 }

@@ -47,10 +47,12 @@ export const SocketProvider = ({ children }) => {
 
           if (parsedData.action === 'next') {
             setDrawer(parsedData.payload.drawer);
+            setPlayers(parsedData.payload.players);
             continue;
           }
 
           if (parsedData.action === 'set_word') {
+            console.log('setting word', parsedData.payload.word);
             setWord(parsedData.payload.word);
             continue;
           }
@@ -70,8 +72,8 @@ export const SocketProvider = ({ children }) => {
         }
 
         if (parsedData.action === 'next') {
-          console.log(parsedData.payload);
           setDrawer(parsedData.payload.drawer);
+          setPlayers(parsedData.payload.players);
           return;
         }
 

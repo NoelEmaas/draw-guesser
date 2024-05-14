@@ -79,7 +79,7 @@ const DrawingBoard = ({ sendData }) => {
     }, []);
 
     return (
-        <canvas id="gameCanvas" width="600" height="600" ref={canvasRef} className='border'></canvas>
+        <canvas id="gameCanvas" width="500" height="500" ref={canvasRef} className='border bg-white rounded-lg'></canvas>
     );
 }
 

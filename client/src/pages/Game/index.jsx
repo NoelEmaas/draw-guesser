@@ -6,12 +6,15 @@ import DrawingBoard from './components/DrawingBoard';
 import StaticBoard from './components/StaticBoard';
 import Timer from './components/Timer';
 import Players from './components/Players';
+import RevealWord from './components/RevealWord';
 
 const GamePage = () => {
     const { socketData, sendData, userId, players, drawer, word, setWord } = useContext(SocketContext);
     const [timerIsActive, setTimerIsActive] = useState(false);
     const [seconds, setSeconds] = useState(30);
     const [isDrawer, setIsDrawer] = useState(true);
+
+    const [revealWord, setRevealWord] = useState(false);
 
     useEffect(() => {
         if (!word) return;
@@ -28,6 +31,8 @@ const GamePage = () => {
 
                 sendData(JSON.stringify(data));
             }
+
+            setRevealWord(true);
             setTimerIsActive(false);
             setSeconds(30);
             setWord(null);
@@ -53,17 +58,20 @@ const GamePage = () => {
 
     return (
         <div className='flex items-center bg-blue-600'>
-            <p>User id: {userId}</p>
             <Players players={players} drawer={drawer}/>
-            {
-                isDrawer ? (
+            <div className='flex flex-col gap-y-2 w-[500px] py-4'>
+                <div className='bg-white rounded-lg border w-full h-full p-4'>
+                    <Timer isActive={timerIsActive} setIsActive={setTimerIsActive} seconds={seconds} setSeconds={setSeconds} />
+                </div>
+                {
+                    isDrawer ? (
                     <DrawingBoard sendData={sendData} />
-                ) : (
-                    <StaticBoard socketData={socketData} />
 
-                )
-            }
-            <Timer isActive={timerIsActive} setIsActive={setTimerIsActive} seconds={seconds} setSeconds={setSeconds} />
+                    ) : (
+                        <StaticBoard socketData={socketData} />
+                    )
+                }
+            </div>
             <Chat socketData={socketData} player={players[userId]} drawer={drawer} sendData={sendData} word={word} canChat={!isDrawer}/>
         </div>
     )

@@ -39,7 +39,7 @@ const StaticBoard = ({ socketData }) => {
     }, [socketData]);
 
     return (
-        <canvas width="600" height="600" ref={canvasRef} className='border'></canvas>
+        <canvas width="500" height="500" ref={canvasRef} className='border bg-white rounded-lg'></canvas>
     );
 }
 
