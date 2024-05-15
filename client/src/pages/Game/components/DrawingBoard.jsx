@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 
-const DrawingBoard = ({ sendData }) => {
+const DrawingBoard = ({ sendData, word }) => {
     const canvasRef = useRef(null);
     const contextRef = useRef(null);
     const isDrawing = useRef(false);
@@ -79,7 +79,11 @@ const DrawingBoard = ({ sendData }) => {
     }, []);
 
     return (
-        <canvas id="gameCanvas" width="500" height="500" ref={canvasRef} className='border bg-white rounded-lg'></canvas>
+        <div className='flex flex-col items-center relative pt-4'>
+            <p className='absolute top-10'>{word && word.toUpperCase()}</p>
+            <h1 className='font-bold absolute top-0 bg-[#FFBF1F] border-2 rounded-full px-4 py-1 border-[#043173] text-xs'>YOU ARE THE DRAWER</h1>
+            <canvas id="gameCanvas" width={400} height={400} ref={canvasRef} className='bg-white rounded-lg border-2 border-[#043173]'></canvas>
+        </div>
     );
 }
 

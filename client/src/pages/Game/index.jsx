@@ -9,7 +9,12 @@ import Players from './components/Players';
 import RevealWord from './components/RevealWord';
 import EndGame from './components/EndGame';
 
+import Banner from '../../assets/banner.png';
+import Background from '../../assets/bg-repeat.png';
+
 const GamePage = () => {
+    // TODO: fix the repeated words, which I think causes the setWord not to be called again in useEffect
+
     const { socketData, sendData, userId, players, drawer, word, setWord , end } = useContext(SocketContext);
     const words = ['apple', 'banana', 'cherry', 'date', 'elderberry', 'fig', 'grape', 'honeydew', 'kiwi', 'lemon', 'mango', 'nectarine', 'orange', 'papaya', 'quince', 'raspberry', 'strawberry', 'tangerine', 'ugli', 'vanilla', 'watermelon', 'ximenia', 'yuzu', 'zucchini'];
     const [timerIsActive, setTimerIsActive] = useState(false);
@@ -65,26 +70,12 @@ const GamePage = () => {
     }, [drawer])
 
     return (
-        <div className='flex items-center bg-blue-600'>
+        <div className='flex items-center h-screen' style={{ backgroundImage: `url(${Background})`, backgroundColor: '#0A5EFB'}} >
             <Players players={players} drawer={drawer}/>
-            <div className='flex flex-col gap-y-2 w-[500px] py-2'>
-                <div className='flex items-center justify-between w-full h-full p-4 bg-white border rounded-lg'>
-                    <Timer isActive={timerIsActive} setIsActive={setTimerIsActive} seconds={seconds} setSeconds={setSeconds} />
-                    {
-                        isDrawer ? (
-                            <p className='font-bold text-blue-500'>YOU ARE THE DRAWER</p>
-                        ) : (
-                            <p className='font-bold text-blue-500'>YOUR ARE A GUESSER</p>
-                        )
-                    }
-                    {
-                        isDrawer ? (
-                            <p>Word: {word}</p>
-                        ) : (
-                            <p>Hint: {word && word.length} letters</p>
-                        )
-                    }
-                    {/* Word: {word} */}
+            <div className='flex flex-col items-center gap-y-2 w-[440px] h-full p-4'>
+                <div className='flex flex-col items-center gap-y-2 mb-8'>
+                    <img src={Banner} alt="" width={300} />
+                    <p className='font-black text-white text-xs'>DRAW, GUESS, WIN</p>
                 </div>
                 {
                     end ? (
@@ -94,9 +85,15 @@ const GamePage = () => {
                             <RevealWord word={word} />
                         ) : (
                             isDrawer ? (
-                                <DrawingBoard sendData={sendData} />
+                                <>
+                                    <DrawingBoard sendData={sendData} word={word}/>
+                                    <Timer isActive={timerIsActive} setIsActive={setTimerIsActive} seconds={seconds} setSeconds={setSeconds} />
+                                </>
                             ) : (
-                                <StaticBoard socketData={socketData} />
+                                <>
+                                    <StaticBoard socketData={socketData} numberOfLetters={word && word.length}/>
+                                    <Timer isActive={timerIsActive} setIsActive={setTimerIsActive} seconds={seconds} setSeconds={setSeconds} />
+                                </>
                             )
                         )
                     )
