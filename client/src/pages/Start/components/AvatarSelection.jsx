@@ -3,20 +3,22 @@ import { Avatars } from '../../../lib/utils';
 
 const AvatarSelection = ({ selectedAvatar, setSelectedAvatar, setViewAvatars }) => {
     return (
-        <div className='flex flex-col items-center p-8 bg-white border rounded-lg gap-y-4'>
-            <p className='text-lg font-bold text-blue-500'>Select Avatar</p>
-            <div className='grid grid-cols-5 gap-6'>
-                {Avatars.map((avatar, index) => (
-                    <div className='relative flex items-center justify-center' onClick={() => {setSelectedAvatar(index)}}>
-                        <img key={index} src={avatar} alt={`Avatar ${index}`} width={100} className='absolute mb-1.5'/>
-                        <div className={`border-4 ${selectedAvatar === index ? 'border-blue-500' : 'border-white'} rounded-full w-[110px] h-[110px] mt-5`}></div>
-                    </div>
-                ))}
+        <div className='flex flex-col items-center relative pt-4'>
+            <h1 className='font-bold absolute top-0 bg-[#FFBF1F] border-2 rounded-full px-4 py-2 border-[#043173] text-sm'>CHOOSE AVATAR</h1>
+            <div className='flex flex-col items-center gap-y-4 bg-white border-2 border-[#043173] rounded-lg p-8'>
+                <div className='grid grid-cols-5 gap-5'>
+                    {Avatars.map((avatar, index) => (
+                        <div className='relative flex items-center justify-center cursor-pointer' onClick={() => {setSelectedAvatar(index)}}>
+                            <img key={index} src={avatar} alt={`Avatar ${index}`} width={80} className='absolute'/>
+                            <div className={`border-4 ${selectedAvatar === index ? 'border-blue-500' : 'border-white'} rounded-full w-[90px] h-[90px] mt-5`}></div>
+                        </div>
+                    ))}
+                </div>
             </div>
-            <button onClick={() => {setViewAvatars(false)}} className='bg-[#FFBF00] border-2 border-[#002043] rounded-lg font-bold w-[250px] py-2 mt-4'>
-                Select Avatar
+            <button onClick={() => {setViewAvatars(false)}} className='bg-green-500 hover:bg-green-400 text-white font-bold py-2 px-4 border-b-4 border-green-700 hover:border-green-500 rounded mt-4 shadow-md drop-shadow-md'>
+                Select
             </button>
-        </div>
+        </div> 
     )
 }
 
