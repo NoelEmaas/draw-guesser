@@ -1,15 +1,11 @@
 import { useEffect, useState, useRef } from "react";
 import ChatLabel from '../../../assets/chat.png';
+import ScrollToBottom from 'react-scroll-to-bottom';
 
 
 const Chat = ({ socketData, sendData, player, word, drawer, canChat, seconds, guessed, setGuessed }) => {
     const [messages, setMessages] = useState([]);
     const [message, setMessage] = useState("");
-    const scrollableDiv = useRef(null);
-
-    useEffect(() => {
-        scrollableDiv.current.scrollTop = scrollableDiv.current.scrollHeight;
-    }, []);
 
     useEffect(() => {
         if (!socketData) return;
@@ -49,7 +45,7 @@ const Chat = ({ socketData, sendData, player, word, drawer, canChat, seconds, gu
         <div className="w-[280px] h-screen">
             <div className="bg-white h-full w-full p-4 relative flex flex-col items-center border-[#043173] border-l-2">
                 <img src={ChatLabel} alt="players" width={85} className="mt-1 mb-4"/>
-                <div ref={scrollableDiv} className="chat-messages w-full border h-[500px] rounded-lg p-2 overflow-y-scroll">
+                <ScrollToBottom className="chat-messages w-full border h-[500px] rounded-lg p-2">
                     {messages.map((msg, index) => (
                         <div key={index} className={`flex items-center gap-x-2 ${msg.correct ? 'text-green-600' : 'text-black'}`}>                 
                             {
@@ -61,7 +57,7 @@ const Chat = ({ socketData, sendData, player, word, drawer, canChat, seconds, gu
                             }            
                         </div>
                     ))}
-                </div>
+                </ScrollToBottom>
                 <div className="absolute bottom-1 p-4">
                     <div className="w-full h-[45px] flex items-center justify-center rounded-md">
                         <input
