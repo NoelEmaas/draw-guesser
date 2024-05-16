@@ -1,10 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import ChatLabel from '../../../assets/chat.png';
 
-const Chat = ({ socketData, sendData, player, word, drawer, canChat }) => {
+
+const Chat = ({ socketData, sendData, player, word, drawer, canChat, seconds, guessed, setGuessed }) => {
     const [messages, setMessages] = useState([]);
     const [message, setMessage] = useState("");
-    const [guessed, setGuessed] = useState(false);
+    const scrollableDiv = useRef(null);
+
+    useEffect(() => {
+        scrollableDiv.current.scrollTop = scrollableDiv.current.scrollHeight;
+    }, []);
 
     useEffect(() => {
         if (!socketData) return;
@@ -31,7 +36,8 @@ const Chat = ({ socketData, sendData, player, word, drawer, canChat }) => {
                 message: message,
                 sender: player.name,
                 correct: correctlyGuessed,
-                drawerId: drawer.id
+                drawerId: drawer.id,
+                timeGuessed: seconds,
             }
         };
 
@@ -42,8 +48,8 @@ const Chat = ({ socketData, sendData, player, word, drawer, canChat }) => {
     return (
         <div className="w-[280px] h-screen">
             <div className="bg-white h-full w-full p-4 relative flex flex-col items-center border-[#043173] border-l-2">
-                <img src={ChatLabel} alt="players" width={85} className="mt-1"/>
-                <div className="chat-messages w-full">
+                <img src={ChatLabel} alt="players" width={85} className="mt-1 mb-4"/>
+                <div ref={scrollableDiv} className="chat-messages w-full border h-[500px] rounded-lg p-2 overflow-y-scroll">
                     {messages.map((msg, index) => (
                         <div key={index} className={`flex items-center gap-x-2 ${msg.correct ? 'text-green-600' : 'text-black'}`}>                 
                             {

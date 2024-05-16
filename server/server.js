@@ -6,7 +6,6 @@ let players = {};
 let drawerIndex = 0;
 let gotCorrect = 0;
 let rounds = 0;
-let words = ['apple', 'banana', 'cherry', 'date', 'elderberry', 'fig', 'grape', 'honeydew', 'kiwi', 'lemon', 'mango', 'nectarine', 'orange', 'papaya', 'quince', 'raspberry', 'strawberry', 'tangerine', 'ugli', 'vanilla', 'watermelon', 'ximenia', 'yuzu', 'zucchini'];
 let status = 'waiting';
 
 const server = net.createServer(socket => {
@@ -97,10 +96,10 @@ const server = net.createServer(socket => {
                 }
         
                 if (action == 'message') {
-                    const { correct, drawerId } = payload;
+                    const { correct, drawerId, timeGuessed } = payload;
                     if (correct) {
                         players[id].correct = true;
-                        players[id].score += (Object.keys(players).length - gotCorrect - 1) * 10;
+                        players[id].score += ((Object.keys(players).length - gotCorrect - 1) * 10) + timeGuessed;
                         players[drawerId].score += 10;
                         gotCorrect += 1;
                         broadcast(socket, JSON.stringify({ action: 'score', payload: { players: players }}));
@@ -174,10 +173,10 @@ const server = net.createServer(socket => {
         }
 
         if (action == 'message') {
-            const { correct, drawerId } = payload;
+            const { correct, drawerId, timeGuessed } = payload;
             if (correct) {
                 players[id].correct = true;
-                players[id].score += (Object.keys(players).length - gotCorrect - 1) * 10;
+                players[id].score += ((Object.keys(players).length - gotCorrect - 1) * 10) + timeGuessed;
                 players[drawerId].score += 10;
                 gotCorrect += 1;
                 broadcast(socket, JSON.stringify({ action: 'score', payload: { players: players }}));

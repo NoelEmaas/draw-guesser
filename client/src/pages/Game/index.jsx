@@ -18,12 +18,104 @@ const GamePage = () => {
     // TODO: fix the repeated words, which I think causes the setWord not to be called again in useEffect
 
     const { socketData, sendData, userId, players, drawer, word, setWord , end } = useContext(SocketContext);
-    const words = ['apple', 'banana', 'cherry', 'date', 'elderberry', 'fig', 'grape', 'honeydew', 'kiwi', 'lemon', 'mango', 'nectarine', 'orange', 'papaya', 'quince', 'raspberry', 'strawberry', 'tangerine', 'ugli', 'vanilla', 'watermelon', 'ximenia', 'yuzu', 'zucchini'];
+    const words = [
+        'apple',
+        'house',
+        'sun',
+        'tree',
+        'flower',
+        'car',
+        'boat',
+        'plane',
+        'dog',
+        'cat',
+        'umbrella',
+        'heart',
+        'figure',
+        'cake',
+        'balloon',
+        'ball',
+        'cloud',
+        'star',
+        'rainbow',
+        'book',
+        'chair',
+        'table',
+        'scissors',
+        'bulb',
+        'ladder',
+        'skateboard',
+        'bicycle',
+        'tent',
+        'burger',
+        'cone',
+        'pizza',
+        'butterfly',
+        'bird',
+        'fish',
+        'moon',
+        'key',
+        'crown',
+        'hat',
+        'glasses',
+        'sock',
+        'shirt',
+        'pants',
+        'shoe',
+        'glove',
+        'backpack',
+        'basket',
+        'gift',
+        'box',
+        'bag',
+        'envelope',
+        'clock',
+        'watch',
+        'phone',
+        'camera',
+        'computer',
+        'laptop',
+        'mouse',
+        'keyboard',
+        'printer',
+        'television',
+        'radio',
+        'microwave',
+        'oven',
+        'fridge',
+        'toilet',
+        'bath',
+        'shower',
+        'sink',
+        'bed',
+        'pillow',
+        'chair',
+        'table',
+        'desk',
+        'lamp',
+        'mirror',
+        'vase',
+        'bowl',
+        'plate',
+        'cup',
+        'mug',
+        'fork',
+        'spoon',
+        'knife',
+        'bottle',
+        'box',
+        'carton',
+        'paper',
+        'pen',
+        'pencil',
+        'ruler',
+    ];
     const [timerIsActive, setTimerIsActive] = useState(false);
     
     const [seconds, setSeconds] = useState(30);
     const [isDrawer, setIsDrawer] = useState(true);
     const [revealWord, setRevealWord] = useState(false);
+    const [guessed, setGuessed] = useState(false);
 
     const [wordToReveal, setWordToReveal] = useState('');
 
@@ -40,6 +132,7 @@ const GamePage = () => {
             setTimerIsActive(false);
             setSeconds(30);
             setWord(null);
+            setGuessed(false);
 
             setTimeout(() => {
                 setRevealWord(false);
@@ -108,7 +201,7 @@ const GamePage = () => {
                             
                         }
                     </div>
-                    <Chat socketData={socketData} player={players[userId]} drawer={drawer} sendData={sendData} word={word} canChat={!isDrawer}/>
+                    <Chat socketData={socketData} player={players[userId]} drawer={drawer} sendData={sendData} word={word} canChat={!isDrawer} seconds={seconds} guessed={guessed} setGuessed={setGuessed}/>
                 </div>
             )
         
