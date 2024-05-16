@@ -16,8 +16,8 @@ function Timer({ isActive, setIsActive, seconds, setSeconds }) {
   }, [isActive, seconds]);
 
   return (
-    <div className='flex items-center gapx-x-2'>
-      <p className='font-bold text-blue-500'>Time:</p>
+    <div className='flex flex-col gap-y-1 w-fit justify-center items-center bg-white p-2 border-2 border-[#043173] rounded-lg'>
+      <p className='font-bold text-blue-500 text-xs'>TIME</p>
       <p>{seconds} seconds left</p>
     </div>
   );

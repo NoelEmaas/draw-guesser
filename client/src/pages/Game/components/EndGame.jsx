@@ -3,7 +3,7 @@
 const EndGame = ({ players }) => {
     console.log(players);
     return (
-        <div className="bg-white rounded-lg w-[500px] h-[500px] border flex flex-col items-center">
+        <div className="bg-white rounded-lg w-full h-[440px] flex flex-col items-center border-2 border-[#043173]">
             <h1 className="text-blue-500 text-xl font-bold mt-4">Game Over!</h1>
             <h4 className="text-xl font-bold mb-4">Final Scores:</h4>
             <div className="bg-white border rounded-lg w-full h-full flex flex-col gap-y-4 p-4">

@@ -25,9 +25,9 @@ const RevealWord = ({ word }) => {
     }, []);
 
     return (
-        <div className="bg-white rounded-lg w-[500px] h-[500px] flex flex-col items-center justify-center">
-            <p className='text-slate-500'>Correct Word:</p>
-            <h1 className='font-bold text-blue-500 mb-4 text-2xl'>{word}</h1>
+        <div className="bg-white rounded-lg w-full h-[440px] flex flex-col items-center justify-center  border-2 border-[#043173]">
+            <p className='text-slate-500 text-sm'>Correct Word:</p>
+            <h1 className='font-bold text-blue-500 mb-4 text-2xl'>{word.toUpperCase()}</h1>
             <div className="progress-bar">
               <div
                   className="progress"

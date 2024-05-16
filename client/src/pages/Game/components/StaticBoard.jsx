@@ -1,8 +1,9 @@
 import React, { useRef, useEffect } from 'react';
 
-const StaticBoard = ({ socketData }) => {
+const StaticBoard = ({ socketData, numberOfLetters }) => {
     const canvasRef = useRef(null);
     const contextRef = useRef(null);
+    const underscores = Array(numberOfLetters).fill('_').map((_, index) => <p key={index}>_</p>);
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -39,7 +40,11 @@ const StaticBoard = ({ socketData }) => {
     }, [socketData]);
 
     return (
-        <canvas width="500" height="500" ref={canvasRef} className='border bg-white rounded-lg'></canvas>
+        <div className='flex flex-col items-center relative pt-4'>
+            <div className='absolute top-10 flex items-center gap-x-2'>{underscores}</div>
+            <h1 className='font-bold absolute top-0 bg-[#FFBF1F] border-2 rounded-full px-4 py-1 border-[#043173] text-xs'>YOU ARE A GUESSER</h1>
+            <canvas ref={canvasRef} width={400} height={400} className='border-2 border-[#043173] bg-white rounded-lg w-full'></canvas>
+        </div>
     );
 }
 
