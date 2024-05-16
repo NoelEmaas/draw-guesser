@@ -3,7 +3,7 @@ import net from 'net';
 
 export const SocketContext = createContext();
 
-export const SocketProvider = ({ children }) => {
+export const SocketProvider = ({ children, setEndGame }) => {
   const [socket, setSocket] = useState(null);
   const [socketData, setSocketData] = useState(null);
   const [userId, setUserId] = useState(null);
@@ -58,7 +58,6 @@ export const SocketProvider = ({ children }) => {
           }
 
           if (parsedData.action === 'set_word') {
-            console.log('setting word', parsedData.payload.word);
             setWord(parsedData.payload.word);
             continue;
           }
@@ -69,6 +68,7 @@ export const SocketProvider = ({ children }) => {
           }
 
           if (parsedData.action === 'end') {
+            setEndGame(true);
             setPlayers(parsedData.payload.players);
             setEnd(true);
             // setDrawer(null);

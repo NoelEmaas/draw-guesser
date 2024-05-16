@@ -12,6 +12,8 @@ import EndGame from './components/EndGame';
 import Banner from '../../assets/banner.png';
 import Background from '../../assets/bg-repeat.png';
 
+import FinalScores from '../FinalScores';
+
 const GamePage = () => {
     // TODO: fix the repeated words, which I think causes the setWord not to be called again in useEffect
 
@@ -23,8 +25,12 @@ const GamePage = () => {
     const [isDrawer, setIsDrawer] = useState(true);
     const [revealWord, setRevealWord] = useState(false);
 
+    const [wordToReveal, setWordToReveal] = useState('');
+
     useEffect(() => {
         if (!word) return;
+        console.log('word changed', word);
+        setWordToReveal(word);
         setTimerIsActive(true);
     }, [word]);
 
@@ -33,19 +39,18 @@ const GamePage = () => {
             setRevealWord(true);
             setTimerIsActive(false);
             setSeconds(30);
+            setWord(null);
 
             setTimeout(() => {
                 setRevealWord(false);
-                setWord(null);
 
                 if (drawer.id === userId) {
                     const data = {
                         action: 'next',
                         payload: null,
                     }
-
-                    console.log('request next');
-
+                    
+                    console.log('trigger next drawer');
                     sendData(JSON.stringify(data));
                 }
             }, 5000);
@@ -54,6 +59,7 @@ const GamePage = () => {
 
     useEffect(() => {
         if (drawer.id === userId) {
+            console.log('I am the drawer!');
             setIsDrawer(true);
             if (word) return;
             const data = {
@@ -62,7 +68,8 @@ const GamePage = () => {
                     word: words[Math.floor(Math.random() * words.length)],
                 },
             }
-    
+            
+            console.log('trigger next word', data.payload.word);
             sendData(JSON.stringify(data));
         } else {
             setIsDrawer(false);
@@ -70,37 +77,41 @@ const GamePage = () => {
     }, [drawer])
 
     return (
-        <div className='flex items-center h-screen' style={{ backgroundImage: `url(${Background})`, backgroundColor: '#0A5EFB'}} >
-            <Players players={players} drawer={drawer}/>
-            <div className='flex flex-col items-center gap-y-2 w-[440px] h-full p-4'>
-                <div className='flex flex-col items-center gap-y-2 mb-8'>
-                    <img src={Banner} alt="" width={300} />
-                    <p className='font-black text-white text-xs'>DRAW, GUESS, WIN</p>
+        
+            end ? (
+                <FinalScores players={players} userId={userId}/>
+            ) : (
+                <div className='flex items-center h-screen' style={{ backgroundImage: `url(${Background})`, backgroundColor: '#0A5EFB'}} >
+                    <Players players={players} drawer={drawer}/>
+                    <div className='flex flex-col items-center gap-y-2 w-[440px] h-full p-4'>
+                        <div className='flex flex-col items-center gap-y-2 mb-8'>
+                            <img src={Banner} alt="" width={300} />
+                            <p className='font-black text-white text-xs'>DRAW, GUESS, WIN</p>
+                        </div>
+                        {
+        
+                                revealWord ? (
+                                    <RevealWord word={wordToReveal} />
+                                ) : (
+                                    isDrawer ? (
+                                        <>
+                                            <DrawingBoard sendData={sendData} word={word}/>
+                                            <Timer isActive={timerIsActive} setIsActive={setTimerIsActive} seconds={seconds} setSeconds={setSeconds} />
+                                        </>
+                                    ) : (
+                                        <>
+                                            <StaticBoard socketData={socketData} numberOfLetters={word && word.length}/>
+                                            <Timer isActive={timerIsActive} setIsActive={setTimerIsActive} seconds={seconds} setSeconds={setSeconds} />
+                                        </>
+                                    )
+                                )
+                            
+                        }
+                    </div>
+                    <Chat socketData={socketData} player={players[userId]} drawer={drawer} sendData={sendData} word={word} canChat={!isDrawer}/>
                 </div>
-                {
-                    end ? (
-                        <EndGame players={players} />
-                    ) : (
-                        revealWord ? (
-                            <RevealWord word={word} />
-                        ) : (
-                            isDrawer ? (
-                                <>
-                                    <DrawingBoard sendData={sendData} word={word}/>
-                                    <Timer isActive={timerIsActive} setIsActive={setTimerIsActive} seconds={seconds} setSeconds={setSeconds} />
-                                </>
-                            ) : (
-                                <>
-                                    <StaticBoard socketData={socketData} numberOfLetters={word && word.length}/>
-                                    <Timer isActive={timerIsActive} setIsActive={setTimerIsActive} seconds={seconds} setSeconds={setSeconds} />
-                                </>
-                            )
-                        )
-                    )
-                }
-            </div>
-            <Chat socketData={socketData} player={players[userId]} drawer={drawer} sendData={sendData} word={word} canChat={!isDrawer}/>
-        </div>
+            )
+        
     )
 }
 

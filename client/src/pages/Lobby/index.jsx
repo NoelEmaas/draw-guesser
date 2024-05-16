@@ -12,7 +12,6 @@ const Lobby = ({ setStartGame, setJoin }) => {
     useEffect(() => {
         if (!socketData) return;
         const { action, payload } = socketData;
-        console.log(action);
 
         if (action === 'join') {
             setPlayers(payload.players);
