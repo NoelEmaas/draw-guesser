@@ -1,6 +1,32 @@
 # Draw Guesser
 Multiplayer Draw Guessing Game using Sockets. Built using Electon, React, Net library.
 
+# Setup
+```
+git clone https://github.com/NoelEmaas/draw-guesser.git
+cd draw-guesser
+```
+
+Note: Replace the value of ```SERVER IP ADDRESS``` in the following files:
+- client/src/providers/SocketProvider.jsx
+- server/server.js
+
+Run server:
+```
+cd server
+npm start
+```
+
+Run client:
+```
+cd client
+npm install
+npm run build
+npm start
+```
+
+
+
 # Preview
 
 | Main Menu |
