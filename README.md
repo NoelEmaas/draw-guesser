@@ -1,5 +1,5 @@
 # Draw Guesser
-Multiplayer Draw Guessing Game using Sockets. Built using Electon, React, Net library.
+Multiplayer Draw Guessing Game using Sockets. Built using Electron, React, Net library.
 
 # Setup
 ```
