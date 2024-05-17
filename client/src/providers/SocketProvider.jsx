@@ -15,7 +15,7 @@ export const SocketProvider = ({ children, setEndGame }) => {
   const connectToServer = () => {
     const newSocket = net.connect({
       port: 8000,
-      host: '192.168.1.91',
+      host: 'SERVER_IP_ADDRESS',
     });
 
     newSocket.on('connect', () => {

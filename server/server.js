@@ -200,7 +200,7 @@ const server = net.createServer(socket => {
     });
 });
 
-server.listen(8000, '192.168.1.91');
+server.listen(8000, 'SERVER_IP_ADDRESS');
 
 function broadcast(sender, data) {
     for (const [id, socket] of Object.entries(sockets)) {
